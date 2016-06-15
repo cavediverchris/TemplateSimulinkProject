@@ -38,7 +38,7 @@ Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
 
 
 % Add project folders to the path.
-folders = project_paths();
+folders = ProjectPaths();
 for folder_idx = 1:numel(folders)
     addpath( genpath( fullfile(projectRoot, folders{folder_idx}) ));
     
