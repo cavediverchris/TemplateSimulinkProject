@@ -12,7 +12,7 @@ disp('Closing down project.');
 
 % Remove paths added for this project. Get the single definition of the
 % folders to add to the path:
-folders = project_paths();
+folders = ProjectPaths();
 
 % Remove these from the MATLAB path:
 for Folder_Idx=1:numel(folders)
