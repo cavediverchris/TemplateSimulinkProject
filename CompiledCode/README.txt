@@ -1,0 +1,1 @@
+This folder is used to contain files created during the compilation of models into target code. Files within this folder should not be added to source control. This folder is used in order to ensure that the working folder remains tidy and organised.
