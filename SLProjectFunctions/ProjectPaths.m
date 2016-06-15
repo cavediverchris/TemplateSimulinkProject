@@ -22,7 +22,7 @@
 % will make the project compatible with multiple operating systems (Linux
 % and Windows).
 
-function folders = project_paths()
+function folders = ProjectPaths()
 %project_paths   Define the set of folders to add to the MATLAB path
 %  
 %   Definition of the folders to add to the MATLAB path when this Project
