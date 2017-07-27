@@ -3,21 +3,50 @@
 % This script will create a new folder with all the required files and
 % sub-folders inside the SubSystemModels folder.
 
-%% Request Prefix
+%% Assemble Prefixes
+% Import data from external file
+FileID = fopen('SubsystemPrefixes.txt');
+PrefixData = fscanf(FileID, '%s');
+fclose(FileID);
 
+% Calculat the number of commas
+CommaIdxs = strfind('PrefixData, ',');
+NumCommas = length(CommaIdxs);
 
-% Define prefixes
-prefixArray = {...,
-               'ALG',...
-               'LSR',...
-               'ENV',...
-                };
-            
-rationaleArray = {...,
-               ' - Algorithms',...
-               ' - Laser',...
-               ' - Environmental',...
-                };    
+% Error case : prefix and definitions should come in pairs - check for an odd number
+if rem(NumCommas, 2) ~= 0
+  % TODO
+  disp('error!');
+end
+
+% Pre-Allocate container arrays for Prefix and Rationale
+prefixArray = cell(NumCommas/2, 1);
+rationaleArray = cell(NumCommas/2, 1);
+
+% Populate containers
+for ArrayIdx = 1 : NumCommas
+  % Calculate the start and end points of text
+  if ArrayIdx == 1
+    % first loop - special case
+    StartIdx = 1;
+    EndIdx = CommaIdxs(ArrayIdx) - 1;
+  else
+  StartIdx = CommaIdxs(ArrayIdx-1) + 1;
+  EndIdx = CommaIdxs(ArrayIdx) - 1;
+  end
+  
+ % Extract Text
+ TextData = PrefixData(StartIdx : EndIdx);
+ 
+ % Populate Containers
+ if rem(ArrayIdx, 2) == 0
+  % This is a rationale data item
+  rationaleArray{ArrayIdx} = TextData;
+  elseif rem(ArrayIdx, 2) == 1
+  % This is a prefix data item
+ prefixArray{ArrayIdx} = TextData;
+ end
+ end
 
 % Merge the two arrays
 numPrefixes = length (prefixArray);
