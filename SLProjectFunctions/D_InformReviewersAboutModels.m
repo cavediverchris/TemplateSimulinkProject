@@ -18,8 +18,68 @@
 % who will review the model to ensure it is fit for the programme. A person
 % can be an entry in both lists.
 
-% Load 
-load('ReviewerList');
+%% Load source data file
+% Import data from external file
+
+FileID = fopen('ReviewerList.txt');
+FileData = fscanf(FileID, '%s');
+fclose(FileID);
+
+%% Calculate reviewer list sizes
+% The number of entries required to populate arrays with Peer Reviewer
+% Names and Programme Reviewer Names is deduced.
+
+% Calculate number of 'comma's'
+CommaIdxs = strfind(FileData, ',');
+NumCommas = length(CommaIdxs);
+
+% Check that all user names contain a review group, i.e. there will be
+% multiples of 2 number of commas.
+if rem(NumCommas,2) ~= 0
+    % ERROR
+    disp('ERROR : Source file contains an odd number of commas.');
+end
+
+NumEntries = NumCommas/2;
+
+%% Populate arrays
+% Pre-Allocate Arrays for Peer Reviewers and Programme Reviewers
+ReviewerList = cell(NumEntries,1);
+CategoryList = cell(NumEntries,1);
+
+% Populate arrays
+for ArrayIdx = 1: NumCommas
+    % Determine the entry number
+    if rem(ArrayIdx,2) == 0
+        % This will be the second pair for the entry
+    	row = ArrayIdx/2;
+    else
+        % This will be the first pair for the entry
+        row = (ArrayIdx + 1) /2;
+    end
+    
+    % Calculate Start & End points
+    if ArrayIdx == 1
+        StartIdx = 1;
+        EndIdx = CommaIdxs(ArrayIdx) - 1;
+    else
+        StartIdx = CommaIdxs(ArrayIdx-1) + 1;
+        EndIdx = CommaIdxs(ArrayIdx) - 1;
+    end
+    
+    
+    % Extract Text
+    TextData = FileData(StartIdx: EndIdx);
+    
+    if rem(ArrayIdx,2) == 0
+        % This is review group
+        CategoryList{row} = TextData;
+    elseif rem(ArrayIdx,2) == 1
+        % This is the name group
+        ReviewerList{row} = TextData;
+    end
+end
+
 
 %% Check that current user is on lists
 % Before checking if the user has files to review, first check if user is a
@@ -27,23 +87,14 @@ load('ReviewerList');
 
 CurrUser = getenv('USERNAME');
 
-NumPerReviewers = length(PeerReviewerList);
+NumReviewers = length(ReviewerList);
 
-for Reviewer_Index = 1 : NumPerReviewers
-    % Check if the current user is listed in the Peer Reviewer list, if
-    % not, break out from this script.
-    if ~strcmpi(CurrUser, PeerReviewerList{Reviewer_Index})
-        return;
-    elseif strcmpi(CurrUser, PeerReviewerList{Reviewer_Index})
-        ReviewerCategory = 'PEER';
-    end
-        
-    % Check if the current user is listed in the Project Reviewer list, if
-    % not, break out from this script.
-    if ~strcmpi(CurrUser, ProjectReviewerList{Reviewer_Index})
-        return;
-    elseif strcmpi(CurrUser, ProjectReviewerList{Reviewer_Index})
-        ReviewerCategory = 'PROG';
+for ReviewerIdx = 1 : NumReviewers
+    % Search through the review list to see if the current user is in the
+    % review list.
+    if strcmp(ReviewerList(ReviewerIdx), CurrUser);
+        % User is in the review list
+        ReviewerCategory = CategoryList{ReviewerIdx};
     end
 end
 
@@ -107,3 +158,4 @@ end
 % Clean up workspace
 
 clear all
+
