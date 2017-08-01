@@ -5,49 +5,63 @@
 
 %% Assemble Prefixes
 % Import data from external file
-FileID = fopen('SubsystemPrefixes.txt');
+
+FileID = fopen('SubSystemPrefixes.txt');
 PrefixData = fscanf(FileID, '%s');
 fclose(FileID);
 
-% Calculat the number of commas
-CommaIdxs = strfind('PrefixData, ',');
+% Calculate number of 'comma's'
+CommaIdxs = strfind(PrefixData, ',');
 NumCommas = length(CommaIdxs);
 
-% Error case : prefix and definitions should come in pairs - check for an odd number
-if rem(NumCommas, 2) ~= 0
-  % TODO
-  disp('error!');
+% Check that all prefixes contain a definition, i.e. there will be
+% multiples of 2 number of commas.
+if rem(NumCommas,2) ~= 0
+    % ERROR
+    disp('ERROR : Source file contains an odd number of commas.');
 end
 
-% Pre-Allocate container arrays for Prefix and Rationale
-prefixArray = cell(NumCommas/2, 1);
-rationaleArray = cell(NumCommas/2, 1);
+%% Pre-Allocate Memory
+% Pre-Allocate Arrays for Prefix and Rationale
+NumEntries = NumCommas/2;
+prefixArray = cell(NumEntries,1);
+rationaleArray = cell(NumEntries,1);
 
-% Populate containers
-for ArrayIdx = 1 : NumCommas
-  % Calculate the start and end points of text
-  if ArrayIdx == 1
-    % first loop - special case
-    StartIdx = 1;
-    EndIdx = CommaIdxs(ArrayIdx) - 1;
-  else
-  StartIdx = CommaIdxs(ArrayIdx-1) + 1;
-  EndIdx = CommaIdxs(ArrayIdx) - 1;
-  end
-  
- % Extract Text
- TextData = PrefixData(StartIdx : EndIdx);
- 
- % Populate Containers
- if rem(ArrayIdx, 2) == 0
-  % This is a rationale data item
-  rationaleArray{ArrayIdx} = TextData;
-  elseif rem(ArrayIdx, 2) == 1
-  % This is a prefix data item
- prefixArray{ArrayIdx} = TextData;
- end
- end
+% Populate arrays
 
+for ArrayIdx = 1: NumCommas
+    % Determine the entry number
+    if rem(ArrayIdx,2) == 0
+        % This will be the second pair for the entry
+    	row = ArrayIdx/2;
+    else
+        % This will be the first pair for the entry
+        row = (ArrayIdx + 1) /2;
+    end
+    
+    % Calculate Start & End points
+    if ArrayIdx == 1
+        StartIdx = 1;
+        EndIdx = CommaIdxs(ArrayIdx) - 1;
+    else
+        StartIdx = CommaIdxs(ArrayIdx-1) + 1;
+        EndIdx = CommaIdxs(ArrayIdx) - 1;
+    end
+    
+    
+    % Extract Text
+    TextData = PrefixData(StartIdx: EndIdx);
+    
+    if rem(ArrayIdx,2) == 0
+        % This is rationale
+        rationaleArray{row} = TextData;
+    elseif rem(ArrayIdx,2) == 1
+        % This is prefix
+        prefixArray{row} = TextData;
+    end
+end
+
+%% TBD
 % Merge the two arrays
 numPrefixes = length (prefixArray);
 PrefixOptionsArray = cell(1, numPrefixes);
