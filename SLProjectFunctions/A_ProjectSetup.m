@@ -36,7 +36,6 @@ end
 Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
     'CodeGenFolder', myCodeGenFolder);
 
-
 % Add project folders to the path.
 folders = ProjectPaths();
 for folder_idx = 1:numel(folders)
@@ -88,7 +87,7 @@ elseif exist(backupFile , 'file') == 0 & (BackUpFlag == true)
     
     % Print message to screen.
     disp('... Back up completed.')
-elseif exist(backupFile , 'file') == 1
+elseif exist(backupFile , 'file') == 2
     % Print message to screen.
     disp ('... Archive file found for current project - skipping export')
 end
