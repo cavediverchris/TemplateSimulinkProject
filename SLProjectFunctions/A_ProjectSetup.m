@@ -78,7 +78,7 @@ backupFile = strcat(exportLocation, projectName, '_backup_', date,'.zip');
 if BackUpFlag == false
     % Print message to screen.
     disp('... Secondary back-up disabled.')
-elseif exist(backupFile , 'file') == 0 & (backupFile == true)
+elseif exist(backupFile , 'file') == 0 & (BackUpFlag == true)
     % Print message to screen.
     disp(strcat(['... No archive file found, exporting project to ', backupFile]))
     
