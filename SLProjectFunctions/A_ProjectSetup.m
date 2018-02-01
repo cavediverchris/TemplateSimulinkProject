@@ -67,6 +67,14 @@ disp('Back Up Process');
 
 % set this path to a folder to contain the ZIPS.
 exportLocation = 'D:\';
+exportLocation = [exportLocation 'SLProjBackUps'];
+
+% Check that exportLocation is a valid path
+if exist(exportLocation, 'dir') == 0
+    % CASE: exportLocation does not exist as a path
+    % ACTION: create folder at exportLocation
+    mkdir(exportLocation);
+end
 
 % Set this flag to false to disable archiving
 BackUpFlag = false;
