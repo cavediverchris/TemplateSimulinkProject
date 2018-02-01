@@ -122,6 +122,13 @@ load_system(th_name);
 set_param(strcat(th_name(1:end-4), '/Model'), 'ModelName', fullfile(model_name))
 save_system(th_name);
 
+% Rename the title of the Test Harness
+% TODO Rename the title in the Test Harness and the Model to be as defined
+%load_system(th_name);
+%TitleObject = find_system(th_name, 'BlockType', 'Text');
+%set_param(TitleObject, 'String', strcat('Test Harness for ', folderName));
+%save_system(th_name);
+
 % Add to project
 folderContents = ls(pwd);
 [numFiles, ~] = size(folderContents);
