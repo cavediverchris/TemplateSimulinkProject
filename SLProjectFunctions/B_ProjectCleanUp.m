@@ -4,7 +4,10 @@
 % Development Environment (IDE).
 
 function B_ProjectCleanUp()
+% Clear up workspace for dialog message
 clc;
+
+% Close down project
 disp('Closing down project.');
 % Get Project Root
 [ ~ , ~ , projectRoot, ~ ] = GetProjObj;
@@ -23,3 +26,8 @@ end
 % Reset the location where generated code and other temporary files are
 % created (slprj) to the default:
 Simulink.fileGenControl('reset');
+
+% clear up workspace
+close all;
+clear all;
+clc;
