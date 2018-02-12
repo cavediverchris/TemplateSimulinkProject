@@ -104,7 +104,7 @@ addpath(genpath([Proj.RootFolder,ParentFolder , folderName]));
 % renamed.
 % # Copied files are renamed
 % # Model referencing updated
-% # TODO Add to Project
+% # Add to Project
 % # directory returned to original
 %
 cd([Proj.RootFolder, ParentFolder, folderName]);
