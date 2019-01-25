@@ -6,9 +6,9 @@
 %% Clear the workspace and command window
 % The workspace is cleared of all current variables and all windows are
 % closed.
-% clc
-% clear all
-% close all
+clc
+clear all
+close all
 
 %% Acquire SIMULINK Project Information
 % Set up the SIMULINK Project object based upon the release.
