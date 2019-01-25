@@ -82,21 +82,113 @@ end
 %% Request Name
 % The user is then prompted to provide the name for this sub-system.
 
-SubSysName = inputdlg('Enter sub-system name : ', 'Sub-System Name');
-%% Copy Template folder
+NewModelName = inputdlg('Enter sub-system name : ', 'Sub-System Name');
+
+if isempty(NewModelName)
+    % CASE: User pressed cancel
+    % ACTION: Abort
+    disp('User pressed cancel');
+    return;
+end
+
+%% Create folder for new model
 % The folder to contain the suitable files and fodlers can now be created
 
 ParentFolder = '\SubSystemModels\';
-folderName = strcat(Prefix, '_', SubSysName{1});
+folderName = strcat(Prefix, '_', NewModelName{1});
 
-Proj = slproject.getCurrentProject;
-
-mkdir([Proj.RootFolder, ParentFolder , folderName, '\']);
-copyfile([Proj.RootFolder, '\Resources\Template'], [Proj.RootFolder, ParentFolder , folderName, '\']);
+try
+    Proj = slproject.getCurrentProject;
+catch ME
+    if (strcmp(ME.identifier, 'SimulinkProject:api:NoProjectCurrentlyLoaded'))
+        % CASE: A Simulink Project is not loaded
+        % ACTION: The function is being used outside of SL Project, set a
+        % rootfolder path
+        RootFolder = pwd;
+    else
+        RootFolder = Proj.RootFolder;
+    end
+end
+mkdir([RootFolder, ParentFolder , folderName, '\']);
 
 % Add to path
-addpath(genpath([Proj.RootFolder,ParentFolder , folderName]));
+addpath(genpath([RootFolder,ParentFolder , folderName]));
 
+% Define Test Harness and Model Names
+th_name = [folderName, '_TestHarness'];
+model_name = [folderName, '_Model'];
+
+%% Create model
+% In this cell, we create the new model
+
+open_system(new_system(model_name));
+
+% Add an inport
+add_block('simulink/Sources/In1', [gcs, '/Inport']);
+set_param([gcs, '/Inport'], 'position', [100 100 130 130]);
+
+% Add a unity gain block
+add_block('simulink/Math Operations/Gain', [gcs, '/UnityGain']);
+set_param([gcs, '/UnityGain'], 'position', [200 100 230 130]);
+
+% Add an outport
+add_block('simulink/Sinks/Out1', [gcs, '/Outport']);
+set_param([gcs, '/Outport'], 'position', [300 100 330 130]);
+
+% save current model
+save_system(gcs)
+
+
+% Connect the inport to the gain block
+add_line(gcs, 'Inport/1', 'UnityGain/1');
+
+% Connect the gain block to the outport
+add_line(gcs, 'UnityGain/1', 'Outport/1');
+
+% save current model
+save_system(gcs)
+close_system(model_name);
+%movefile [pwd, '\', model_name] [RootFolder, ParentFolder , folderName, '\']
+
+%% Create test harness
+
+SLTestInstalled = false;
+
+if SLTestInstalled
+    % CASE: Simulink Test is installed, 
+    % ACTION:create a test harness using the Simulink Test command
+    % TODO
+else
+    % CASE: Simulink Test is not installed
+    % ACTION: create a test harness manually
+    
+    open_system(new_system(th_name));
+
+    % Add an constant block
+    add_block('simulink/Sources/Constant', [gcs, '/Constant']);
+    set_param([gcs, '/Constant'], 'position', [100 100 130 130]);
+    
+    % Add a model reference
+    add_block('simulink/Ports & Subsystems/Model', [gcs, '/ReferencedModel'])
+    set_param([gcs, '/ReferencedModel'], 'position', [200 75 430 150]);
+    
+    % Add an display
+    add_block('simulink/Sinks/Display', [gcs, '/Display']);
+    set_param([gcs, '/Display'], 'position', [500 100 550 130]);
+    
+    save_system(gcs)
+    % Set the model reference to point at the previously created model
+    set_param([gcs, '/ReferencedModel'], 'ModelName', fullfile(model_name));
+
+    % Connect the constant to the model reference
+    add_line(gcs, 'Constant/1', 'ReferencedModel/1');
+    
+    % Connect the Output of the model reference to the display
+    add_line(gcs, 'ReferencedModel/1', 'Display/1');
+    
+    save_system(gcs)
+    close_system(th_name);
+end
 %% Update Models
 % Main steps of functionality:
 %
@@ -107,19 +199,15 @@ addpath(genpath([Proj.RootFolder,ParentFolder , folderName]));
 % # Add to Project
 % # directory returned to original
 %
-cd([Proj.RootFolder, ParentFolder, folderName]);
-
-% Define Test Harness and Model Names
-th_name = ['MSTR_', folderName, '_TestHarness.slx'];
-model_name = ['MSTR_', folderName, '_Model.slx'];
+Path = [RootFolder, ParentFolder, folderName];
 
 % use movefile to perform a rename
-movefile('MSTR_Model.slx', model_name);
-movefile('MSTR_TestHarness.slx', th_name);
+movefile([model_name,'.slx'], [Path, '\', model_name, '.slx']);
+movefile([th_name,'.slx'], [Path, '\', th_name, '.slx']);
 
 % Change model reference properties (ignore the .slx at the end of th_name)
 load_system(th_name);
-set_param(strcat(th_name(1:end-4), '/Model'), 'ModelName', fullfile(model_name))
+set_param(strcat(th_name, '/ReferencedModel'), 'ModelName', fullfile(model_name))
 save_system(th_name);
 
 % Rename the title of the Test Harness
@@ -139,6 +227,3 @@ for fileIdx = 3:numFiles
   addFile(Proj, folderContents(fileIdx,:));
   disp(['Added file: ', folderContents(fileIdx,:), ' to project.']);
 end
-
-% Change directory
-cd(Proj.RootFolder);
