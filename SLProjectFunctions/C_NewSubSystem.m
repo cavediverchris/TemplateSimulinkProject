@@ -3,6 +3,11 @@
 % This script will create a new folder with all the required files and
 % sub-folders inside the SubSystemModels folder.
 
+%% Clean Up Workspace
+close all;
+clear all;
+clc;
+
 %% Assemble Prefixes
 % Import data from external file
 
@@ -104,11 +109,11 @@ catch ME
         % CASE: A Simulink Project is not loaded
         % ACTION: The function is being used outside of SL Project, set a
         % rootfolder path
-        RootFolder = pwd;
-    else
-        RootFolder = Proj.RootFolder;
+        RootFolder = pwd;       
     end
 end
+RootFolder = Proj.RootFolder;
+
 mkdir([RootFolder, ParentFolder , folderName, '\']);
 
 % Add to path
@@ -218,12 +223,12 @@ save_system(th_name);
 %save_system(th_name);
 
 % Add to project
-folderContents = ls(pwd);
+folderContents = ls([RootFolder, '\SubSystemModels\']);
 [numFiles, ~] = size(folderContents);
 
 % loop over each entry in folderContents, first two entries are just
 % markers for higher levels
 for fileIdx = 3:numFiles
-  addFile(Proj, folderContents(fileIdx,:));
+  addFile(Proj, [RootFolder, '\SubSystemModels\', folderContents(fileIdx,:)]);
   disp(['Added file: ', folderContents(fileIdx,:), ' to project.']);
 end
