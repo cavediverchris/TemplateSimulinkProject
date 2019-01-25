@@ -66,7 +66,9 @@ end
 disp('Back Up Process');
 
 % set this path to a folder to contain the ZIPS.
-exportLocation = 'D:\';
+CurrentFolder = pwd;
+slashIdx = strfind(CurrentFolder, '\');
+exportLocation = CurrentFolder(1:slashIdx(1));
 exportLocation = [exportLocation 'SLProjBackUps'];
 
 % Check that exportLocation is a valid path
