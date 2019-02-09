@@ -10,19 +10,18 @@ function [ ProjObj , LegacyFlag , projectRoot, projectName ] = GetProjObj( )
 % The Simulink Project API has changed over versions of MATLAB, this
 % section identifies the release.
 
-if verLessThan('matlab', '8.2.0')
-	% Release earlier than R2013B
-    % TODO find version number for 2012A
-    
+if verLessThan('matlab', 'R2012A')
+	% Release earlier than R2013B    
     ProjObj = Simulink.ModelManagement.Project.CurrentProject;
-    LegacyFlag = 1;
+    LegacyFlag = true(1);
+    
     % Extract project parameters - old API
     projectRoot = ProjObj.getRootFolder;
     projectName = ProjObj.getProjectName;
 else
     % Release later than R2013B
     ProjObj = slproject.getCurrentProject;
-    LegacyFlag = 0;
+    LegacyFlag = false(1);
     
     % Extract project parameters - new API
     projectRoot = ProjObj.RootFolder;
