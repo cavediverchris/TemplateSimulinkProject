@@ -36,15 +36,6 @@ end
 Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
     'CodeGenFolder', myCodeGenFolder);
 
-% Add project folders to the path.
-folders = ProjectPaths();
-for folder_idx = 1:numel(folders)
-    addpath( genpath( fullfile(projectRoot, folders{folder_idx}) ));
-    
-    % Print message to screen.
-    disp(strcat(['  adding path: ', fullfile(projectRoot, folders{folder_idx})]))
-end
-
 %% Refresh SIMULINK Browser
 % This is used to make sure that custom libraries are re-loaded from the
 % project workspace

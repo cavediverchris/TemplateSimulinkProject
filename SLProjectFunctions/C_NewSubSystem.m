@@ -194,7 +194,21 @@ else
     save_system(gcs)
     close_system(th_name);
 end
-%% Update Models
+
+%% Add Requirements Module
+
+newReqSet = slreq.new([RootFolder,ParentFolder , folderName, '\', folderName, '_Reqts']);
+
+% Opens the requirements editor
+% myReqSetObj = slreq.open(newReqSet);
+
+% Load the requirements set
+% myReqSetObj = slreq.load(newReqSet);
+
+% Set the description of the linkset
+% TODO
+
+%% Move Models
 % Main steps of functionality:
 %
 % # The directory is changed to ensure that only the intended files are
@@ -215,14 +229,7 @@ load_system(th_name);
 set_param(strcat(th_name, '/ReferencedModel'), 'ModelName', fullfile(model_name))
 save_system(th_name);
 
-% Rename the title of the Test Harness
-% TODO Rename the title in the Test Harness and the Model to be as defined
-%load_system(th_name);
-%TitleObject = find_system(th_name, 'BlockType', 'Text');
-%set_param(TitleObject, 'String', strcat('Test Harness for ', folderName));
-%save_system(th_name);
-
-% Add to project
+%% Add to project
 folderContents = ls([RootFolder, '\SubSystemModels\']);
 [numFiles, ~] = size(folderContents);
 
