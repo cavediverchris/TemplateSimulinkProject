@@ -22,17 +22,20 @@ close all
 % Print message to screen.
 disp(['Initialising Project : ',projectName])
 
-% Set the location of slprj to be the "work" folder of the current project:
+% Create the location of slprj to be the "work" folder of the current project:
 myCacheFolder = fullfile(projectRoot, 'SimulationRunTimeFiles');
 if ~exist(myCacheFolder, 'dir')
     mkdir(myCacheFolder)
 end
- 
+
+% Create the location for any files generated during build for code
+% generation.
 myCodeGenFolder = fullfile(projectRoot, 'CompiledCode');
 if ~exist(myCodeGenFolder, 'dir')
     mkdir(myCodeGenFolder)
 end
 
+% Set both the code generation and work folder paths.
 Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
     'CodeGenFolder', myCodeGenFolder);
 
@@ -56,11 +59,15 @@ end
 % Print message to screen.
 disp('Back Up Process');
 
-% set this path to a folder to contain the ZIPS.
-CurrentFolder = pwd;
+% Set this flag to false to disable archiving
+BackUpFlag = true;
+
+% Define the location for export. This is based upon taking the highest
+% level possible on the same drive as the project location.
+CurrentFolder = projectRoot;
 slashIdx = strfind(CurrentFolder, '\');
 exportLocation = CurrentFolder(1:slashIdx(1));
-exportLocation = [exportLocation 'SLProjBackUps'];
+exportLocation = [exportLocation 'SLProjBackUps\'];
 
 % Check that exportLocation is a valid path
 if exist(exportLocation, 'dir') == 0
@@ -68,9 +75,6 @@ if exist(exportLocation, 'dir') == 0
     % ACTION: create folder at exportLocation
     mkdir(exportLocation);
 end
-
-% Set this flag to false to disable archiving
-BackUpFlag = false;
 
 backupFile = strcat(exportLocation, projectName, '_backup_', date,'.zip');
 
