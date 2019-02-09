@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<Info Name="A_ProjectSetup" Type="StartUp" File="SLProjectFunctions/A_ProjectSetup.m" Icon="" />
+<Info Type="StartUp" Visible="1" Icon="" File="AutomaticReportGenerators/ProjectManagement/ProjectStartUp.m" Name="A_ProjectSetup" />

@@ -3,7 +3,6 @@
 % up (remove) the local customisations made to the MATLAB Interactive
 % Development Environment (IDE).
 
-function B_ProjectCleanUp()
 % Clear up workspace for dialog message
 clc;
 

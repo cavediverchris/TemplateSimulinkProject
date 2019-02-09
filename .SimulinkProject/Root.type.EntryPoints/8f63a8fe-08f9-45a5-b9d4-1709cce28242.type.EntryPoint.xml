@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<Info Name="B_ProjectCleanUp" Type="Shutdown" File="SLProjectFunctions/B_ProjectCleanUp.m" Icon="" />
+<Info Type="Shutdown" Visible="1" Icon="" File="AutomaticReportGenerators/ProjectManagement/ProjectShutDown.m" Name="B_ProjectCleanUp" />
