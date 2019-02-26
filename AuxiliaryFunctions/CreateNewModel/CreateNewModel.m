@@ -154,12 +154,17 @@ set_param(strcat(th_name, '/ReferencedModel'), 'ModelName', fullfile(model_name)
 save_system(th_name);
 
 %% Add to project
-folderContents = ls([RootFolder, '\SubSystemModels\']);
+folderContents = ls([Path, '\']);
 [numFiles, ~] = size(folderContents);
 
 % loop over each entry in folderContents, first two entries are just
 % markers for higher levels
 for fileIdx = 3:numFiles
-  addFile(Proj, [RootFolder, '\SubSystemModels\', folderContents(fileIdx,:)]);
+  addFile(Proj, [Path, '\', folderContents(fileIdx,:)]);
   disp(['Added file: ', folderContents(fileIdx,:), ' to project.']);
 end
+
+%% Add to path
+% In this cell the folder is also added to the project path
+
+addPath(Proj,[Path, '\']);
