@@ -1,7 +1,11 @@
 %% New SubSystem
 % This script is designed to automate the process of creating a sub system.
-% This script will create a new folder with all the required files and
-% sub-folders inside the SubSystemModels folder.
+% This script will create a new folder with the following files within in:
+%
+% # the new model
+% # a test harness for the new model using model referencing
+% # a requirements traceability file
+%
 
 %% Clean Up Workspace
 close all;
@@ -16,9 +20,6 @@ clc;
 %% Create Custom Dialog Box for input
 
 [NewModelName] = CreateDialog(CombinedArray, FirstPrefix);
-
-
-
 
 %% Create folder for new model
 % The folder to contain the suitable files and fodlers can now be created
