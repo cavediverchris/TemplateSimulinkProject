@@ -55,8 +55,8 @@ uiwait(dlg)
 
     function btn_callback(btn, event)      
             % Deduce name given
-            @popup_callback;
-            @edit_callback;
+            popup_callback(popup, event);
+            edit_callback(edit1, event);
             NewModelName = strcat(choice, '_', name);
             delete(gcf);
     end
