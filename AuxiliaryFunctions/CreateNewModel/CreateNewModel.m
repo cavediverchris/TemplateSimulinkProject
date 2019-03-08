@@ -24,7 +24,7 @@ clc;
 %% Create folder for new model
 % The folder to contain the suitable files and fodlers can now be created
 
-ParentFolder = '\SubSystemModels\';
+ParentFolder = '\Models\';
 folderName = NewModelName;
 
 try
@@ -75,6 +75,13 @@ add_line(gcs, 'Inport/1', 'UnityGain/1');
 % Connect the gain block to the outport
 add_line(gcs, 'UnityGain/1', 'Outport/1');
 
+% Set the configuration to use the configuration reference defined in teh
+% data dictionary
+% TODO
+% attachConfigSet(gcs, FixedStepConfiguration);
+% setActiveConfigSet(gcs, FixedStepConfiguration);
+
+
 % save current model
 save_system(gcs)
 close_system(model_name);
@@ -116,6 +123,12 @@ else
     % Connect the Output of the model reference to the display
     add_line(gcs, 'ReferencedModel/1', 'Display/1');
     
+    % Set the configuration to use the configuration reference defined in teh
+    % data dictionary
+    % TODO
+    % attachConfigSet(gcs, FixedStepConfiguration);
+    % setActiveConfigSet(gcs, FixedStepConfiguration);
+    
     save_system(gcs)
     close_system(th_name);
 end
@@ -149,7 +162,8 @@ Path = [RootFolder, ParentFolder, folderName];
 movefile([model_name,'.slx'], [Path, '\', model_name, '.slx']);
 movefile([th_name,'.slx'], [Path, '\', th_name, '.slx']);
 
-% Change model reference properties (ignore the .slx at the end of th_name)
+% Change model reference properties of model in test harness to the model
+% in the newly moved location (ignore the .slx at the end of th_name)
 load_system(th_name);
 set_param(strcat(th_name, '/ReferencedModel'), 'ModelName', fullfile(model_name))
 save_system(th_name);
