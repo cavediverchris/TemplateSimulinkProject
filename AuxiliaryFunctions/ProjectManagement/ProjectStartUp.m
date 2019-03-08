@@ -22,23 +22,31 @@ close all
 % Print message to screen.
 disp(['Initialising Project : ',projectName])
 
-% Create the location of slprj to be the "work" folder of the current project:
-myCacheFolder = fullfile(projectRoot, 'SimulationRunTimeFiles');
-if ~exist(myCacheFolder, 'dir')
-    mkdir(myCacheFolder)
+if verLessThan('matlab','R2018B')
+    % CASE: R2018B template project includes parameters to automatically
+    % set both the code-gen and cache folders.
+    % ACTION: only in earlier releases is manual specification of these
+    % paths required.
+    
+    % Create the location of slprj to be the "work" folder of the current project:
+    myCacheFolder = fullfile(projectRoot, 'SimulationRunTimeFiles');
+    if ~exist(myCacheFolder, 'dir')
+        mkdir(myCacheFolder)
+    end
+    
+    % Create the location for any files generated during build for code
+    % generation.
+    myCodeGenFolder = fullfile(projectRoot, 'CompiledCode');
+    if ~exist(myCodeGenFolder, 'dir')
+        mkdir(myCodeGenFolder)
+    end
+    
+    % Set both the code generation and work folder paths.
+    Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
+        'CodeGenFolder', myCodeGenFolder);
+    
+    clear myCacheFolder myCodeGenFolder;
 end
-
-% Create the location for any files generated during build for code
-% generation.
-myCodeGenFolder = fullfile(projectRoot, 'CompiledCode');
-if ~exist(myCodeGenFolder, 'dir')
-    mkdir(myCodeGenFolder)
-end
-
-% Set both the code generation and work folder paths.
-Simulink.fileGenControl('set', 'CacheFolder', myCacheFolder, ...
-    'CodeGenFolder', myCodeGenFolder);
-
 %% Refresh SIMULINK Browser
 % This is used to make sure that custom libraries are re-loaded from the
 % project workspace
