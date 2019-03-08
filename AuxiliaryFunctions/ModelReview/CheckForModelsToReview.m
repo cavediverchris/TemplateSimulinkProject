@@ -18,67 +18,8 @@
 % who will review the model to ensure it is fit for the programme. A person
 % can be an entry in both lists.
 
-%% Load source data file
-% Import data from external file
-
-FileID = fopen('ReviewerList.txt');
-FileData = fscanf(FileID, '%s');
-fclose(FileID);
-
-%% Calculate reviewer list sizes
-% The number of entries required to populate arrays with Peer Reviewer
-% Names and Programme Reviewer Names is deduced.
-
-% Calculate number of 'comma's'
-CommaIdxs = strfind(FileData, ',');
-NumCommas = length(CommaIdxs);
-
-% Check that all user names contain a review group, i.e. there will be
-% multiples of 2 number of commas.
-if rem(NumCommas,2) ~= 0
-    % ERROR
-    disp('ERROR : Source file contains an odd number of commas.');
-end
-
-NumEntries = NumCommas/2;
-
-%% Populate arrays
-% Pre-Allocate Arrays for Peer Reviewers and Programme Reviewers
-ReviewerList = cell(NumEntries,1);
-CategoryList = cell(NumEntries,1);
-
-% Populate arrays
-for ArrayIdx = 1: NumCommas
-    % Determine the entry number
-    if rem(ArrayIdx,2) == 0
-        % This will be the second pair for the entry
-    	row = ArrayIdx/2;
-    else
-        % This will be the first pair for the entry
-        row = (ArrayIdx + 1) /2;
-    end
-    
-    % Calculate Start & End points
-    if ArrayIdx == 1
-        StartIdx = 1;
-        EndIdx = CommaIdxs(ArrayIdx) - 1;
-    else
-        StartIdx = CommaIdxs(ArrayIdx-1) + 1;
-        EndIdx = CommaIdxs(ArrayIdx) - 1;
-    end
-    
-    
-    % Extract Text
-    TextData = FileData(StartIdx: EndIdx);
-    
-    if rem(ArrayIdx,2) == 0
-        % This is review group
-        CategoryList{row} = TextData;
-    elseif rem(ArrayIdx,2) == 1
-        % This is the name group
-        ReviewerList{row} = TextData;
-    end
-end
+%% Acquire Reviewers Table
+[ReviewersTable] = AssembleReviewers();
 
 
 %% Check that current user is on lists
@@ -86,16 +27,25 @@ end
 % registered reviewer.
 
 CurrUser = getenv('USERNAME');
-
-NumReviewers = length(ReviewerList);
+NumReviewers = height(ReviewersTable);
+UserFound = false;
 
 for ReviewerIdx = 1 : NumReviewers
     % Search through the review list to see if the current user is in the
     % review list.
-    if strcmp(ReviewerList(ReviewerIdx), CurrUser);
+    if strcmp(ReviewersTable.Reviewer(ReviewerIdx), CurrUser)
         % User is in the review list
-        ReviewerCategory = CategoryList{ReviewerIdx};
+        ReviewerCategory = ReviewersTable.Category(ReviewerIdx);
+        UserFound = true;
     end
+end
+
+if UserFound == false
+    % CASE: The current user is not listed in the  ReviewersTable
+    % ACTION: "abort" continued execution of this script
+    disp(['User: "', CurrUser, '" not in ReviewersTable']);
+    clear ReviewerCategory
+    return;
 end
 
 %% Get project object
@@ -131,7 +81,7 @@ for File_Index = 1 : NumFiles
         end
         
         % Found the correct label object
-        if strcmpi(CurLabelCat, ReqdLabelCat) == 1;
+        if strcmpi(CurLabelCat, ReqdLabelCat) == 1
             
             % Check if the label option is the correct category
             if strcmpi(CurFileLabel(Label_Index).Name, 'To Review')
@@ -152,10 +102,13 @@ end
 if NumFilesToReview ~= 0
     numModelsStr = ['You have ', num2str(NumFilesToReview),' models to review!'];
     msgbox({numModelsStr ListFiles{:}}, 'Models require review','warn');
+elseif NumFilesToReview == 0
+    % CASE: User has no files to review
+    % ACTION: Push a notification
+    disp('No files to review');
 end
 
 %% Clean Up
 % Clean up workspace
 
-clear all
-
+clearvars
