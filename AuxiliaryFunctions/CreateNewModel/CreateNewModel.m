@@ -29,6 +29,7 @@ folderName = NewModelName;
 
 try
     Proj = slproject.getCurrentProject;
+    RootFolder = Proj.RootFolder;
 catch ME
     if (strcmp(ME.identifier, 'SimulinkProject:api:NoProjectCurrentlyLoaded'))
         % CASE: A Simulink Project is not loaded
@@ -37,7 +38,7 @@ catch ME
         RootFolder = pwd;       
     end
 end
-RootFolder = Proj.RootFolder;
+
 
 mkdir([RootFolder, ParentFolder , folderName, '\']);
 
@@ -89,12 +90,22 @@ close_system(model_name);
 
 %% Create test harness
 
-SLTestInstalled = false;
+SLTestInstalled = license('test', 'Simulink Test');
 
 if SLTestInstalled
     % CASE: Simulink Test is installed, 
     % ACTION:create a test harness using the Simulink Test command
-    % TODO
+    sltest.harness.create(model_name, ...
+                    'Name', ['Test harness for ', model_name], ...
+                    'Description', ['Test harness for ', model_name], ...
+                    'Source', 'Test Sequence', ...
+                    'SeperateAssessment', 'false', ...
+                    'SynchronizationMode', 'SyncOnOpenAndClose', ...
+                    'CreateWithoutCompile', 'false', ...
+                    'VerificationMode', 'Normal', ...
+                    'RebuildOnOpen', 'true', ...
+                    'SaveExternally', 'true');
+                    
 else
     % CASE: Simulink Test is not installed
     % ACTION: create a test harness manually
