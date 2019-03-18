@@ -105,6 +105,17 @@ elseif exist(backupFile , 'file') == 2
     disp ('... Archive file found for current project - skipping export')
 end
 
+%% Update Template Folder
+% In this section the path that contains templates for use by other projects is defined.
+ProjectTemplatePath = 'C:\';
+
+myTemplate = Simulink.exportToTemplate(ProjObj, 'MyTemplateProject', ...
+                'Group', 'Simulink', ...
+                'Author', getenv('username'), ...
+                'Description', 'This is a base template for the use of Simulink Project', ...
+                'ThumbnailFile', 'ngc6543a.jpg', ...
+                'Title', 'Template Simulink Project');
+
 %% Clean Up
 % clear up the workspace
 clear all;
