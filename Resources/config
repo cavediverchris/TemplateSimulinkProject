@@ -138,16 +138,34 @@
 ### applied to the file.  Note that auto-props functionality
 ### must be enabled, which is typically done by setting the
 ### 'enable-auto-props' option.
-# *.c = svn:eol-style=native
-# *.cpp = svn:eol-style=native
-# *.h = svn:keywords=Author Date Id Rev URL;svn:eol-style=native
-# *.dsp = svn:eol-style=CRLF
-# *.dsw = svn:eol-style=CRLF
-# *.sh = svn:eol-style=native;svn:executable
-# *.txt = svn:eol-style=native;svn:keywords=Author Date Id Rev URL;
-# *.png = svn:mime-type=image/png
-# *.jpg = svn:mime-type=image/jpeg
-# *.mdl = svn:mime-type= application/octet-stream
-# *.mat = svn:mime-type=application/octet-stream 
-# *.slx = svn:mime-type= application/octet-stream
+*.c = svn:eol-style=native
+*.cpp = svn:eol-style=native
+*.h = svn:keywords=Author Date Id Rev URL;svn:eol-style=native
+*.dsp = svn:eol-style=CRLF
+*.dsw = svn:eol-style=CRLF
+*.sh = svn:eol-style=native;svn:executable
+*.txt = svn:eol-style=native;svn:keywords=Author Date Id Rev URL;
+*.png = svn:mime-type=image/png
+*.jpg = svn:mime-type=image/jpeg
+
+### TMW Specific File Formats
+*.mat = svn:mime-type=application/octet-stream 
+*.mdl = svn:mime-type= application/octet-stream
+*.mdlp = svn:mime-type= application/octet-stream
+*.mexa64 = svn:mime-type= application/octet-stream
+*.mexw32 = svn:mime-type= application/octet-stream
+*.mexw64 = svn:mime-type= application/octet-stream
+*.mexmaci64 = svn:mime-type= application/octet-stream
+*.slx = svn:mime-type= application/octet-stream
+*.slxp = svn:mime-type= application/octet-stream
+*.sldd = svn:mime-type= application/octet-stream
+*.mlx = svn:mime-type=application/octet-stream
+*.p = svn:mime-type= application/octet-stream
+
+### MS Specific File Formats
+*.docx = svn:mime-type=application/octet-stream 
+*.xlsx = svn:mime-type=application/octet-stream 
+
+### Other Specific File Formats
+ 
 # Makefile = svn:eol-style=native
